@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#10243a">
+<meta name="description" content="102区域 M区公关部活动资料、素材、文案与档案管理工具">
+<title>102 M区公关部管理系统</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brandmark">PR</div>
+  <div><strong>102 M区公关部</strong><small>PUBLIC RELATIONS MANAGEMENT</small></div>
+  <span id="offlineBadge" class="status">检查连接中</span>
+</header>
+<main class="shell">
+  <section class="hero">
+    <div><p class="eyebrow">DISTRICT 102 · AREA M</p><h1>公关部管理系统</h1><p>让资料有序，让每一次宣传都有记录。</p></div>
+    <button class="primary" id="newActivityBtn">＋ 新增活动</button>
+  </section>
+
+  <section class="stats">
+    <article class="stat"><span>活动总数</span><b id="statTotal">0</b></article>
+    <article class="stat"><span>准备中</span><b id="statPending">0</b></article>
+    <article class="stat"><span>已发布</span><b id="statPublished">0</b></article>
+    <article class="stat"><span>素材数量</span><b id="statMedia">0</b></article>
+  </section>
+
+  <nav class="tabs" aria-label="系统模块">
+    <button class="tab active" data-page="dashboard">总览</button>
+    <button class="tab" data-page="activities">活动档案</button>
+    <button class="tab" data-page="calendar">活动日历</button>
+    <button class="tab" data-page="media">素材库</button>
+    <button class="tab" data-page="copy">文案中心</button>
+    <button class="tab" data-page="backup">备份与输出</button>
+  </nav>
+
+  <section id="page-dashboard" class="page active">
+    <div class="section-head"><div><h2>工作总览</h2><p>近期活动与待处理事项</p></div></div>
+    <div class="panel"><h3>近期活动</h3><div id="recentList" class="record-list empty">目前还没有活动。点击「新增活动」建立第一笔记录。</div></div>
+    <div class="panel tips"><h3>使用提示</h3><p>资料保存在当前浏览器与设备中。请定期到「备份与输出」下载 JSON 备份；清除浏览器资料或更换设备前，先完成备份。</p></div>
+  </section>
+
+  <section id="page-activities" class="page">
+    <div class="section-head"><div><h2>活动档案</h2><p>新增、编辑、搜寻及追踪活动</p></div><button class="primary" id="addActivityBtn">＋ 新增活动</button></div>
+    <input id="activitySearch" class="search" placeholder="搜寻活动编号、主题、分会或负责人">
+    <div id="activityList" class="record-list empty">暂无活动档案。</div>
+  </section>
+
+  <section id="page-calendar" class="page">
+    <div class="section-head"><div><h2>活动日历</h2><p>依日期查看已登记活动</p></div></div>
+    <div class="calendar-controls"><button id="prevMonth" class="ghost">‹</button><strong id="monthLabel"></strong><button id="nextMonth" class="ghost">›</button></div>
+    <div class="calendar-grid" id="calendarGrid"></div>
+    <div class="panel"><h3>所选日期活动</h3><div id="dayEvents" class="record-list empty">请选择日期。</div></div>
+  </section>
+
+  <section id="page-media" class="page">
+    <div class="section-head"><div><h2>素材管理</h2><p>将照片、海报及视频关联至活动</p></div></div>
+    <div class="panel">
+      <label>关联活动<select id="mediaActivity"><option value="">不关联活动</option></select></label>
+      <label>素材类别<select id="mediaCategory"><option>活动照片</option><option>宣传海报</option><option>活动视频</option><option>Logo／品牌资源</option><option>其他</option></select></label>
+      <label>选择文件<input id="mediaFiles" type="file" accept="image/*,video/*" multiple></label>
+      <p class="hint">素材会储存在此设备的浏览器数据库中。大型视频可能占用较多空间，建议视频保留原档并在此记录关键素材。</p>
+      <button class="primary" id="uploadMediaBtn">上传所选素材</button>
+    </div>
+    <div id="mediaList" class="media-grid"></div>
+  </section>
+
+  <section id="page-copy" class="page">
+    <div class="section-head"><div><h2>文案中心</h2><p>根据活动资料生成宣传初稿，可自行修改</p></div></div>
+    <div class="panel">
+      <label>选择活动<select id="copyActivity"><option value="">选择一项活动</option></select></label>
+      <label>文案类型<select id="copyType"><option value="facebook">Facebook 宣传贴文</option><option value="whatsapp">WhatsApp 简讯</option><option value="wechat">WeChat 通知</option><option value="press">正式新闻稿框架</option></select></label>
+      <button class="primary" id="generateCopyBtn">生成文案模板</button>
+      <label>文案内容<textarea id="copyOutput" rows="14" placeholder="生成后可在这里修改文案……"></textarea></label>
+      <button class="secondary" id="copyButton">复制文案</button>
+    </div>
+  </section>
+
+  <section id="page-backup" class="page">
+    <div class="section-head"><div><h2>备份与输出</h2><p>备份资料、打印活动报告及恢复档案</p></div></div>
+    <div class="panel">
+      <h3>数据备份</h3><p>下载 JSON 文件可保存活动及素材资料。请将备份文件存放在安全位置。</p>
+      <div class="button-row"><button class="primary" id="exportBackup">下载完整备份</button><label class="file-button">恢复备份<input id="importBackup" type="file" accept="application/json"></label></div>
+    </div>
+    <div class="panel">
+      <h3>活动报告</h3>
+      <label>选择活动<select id="reportActivity"><option value="">选择一项活动</option></select></label>
+      <button class="secondary" id="printReport">预览／打印／另存 PDF</button>
+      <p class="hint">在打印窗口选择「另存为 PDF」即可输出 PDF 文件。</p>
+    </div>
+    <div class="panel warning"><h3>资料管理提醒</h3><p>此版本为单机本地储存，不会自动同步到其他执委的手机或电脑。不同设备请分别使用，并通过备份文件手动转移资料。</p><button class="danger" id="clearAll">清除本机全部资料</button></div>
+  </section>
+</main>
+
+<dialog id="activityDialog">
+<form id="activityForm" method="dialog">
+  <div class="dialog-head"><div><h2 id="dialogTitle">新增活动</h2><p>带 * 为建议填写项目</p></div><button type="button" class="icon-btn" id="closeDialog">×</button></div>
+  <input type="hidden" id="editId">
+  <div class="form-grid">
+    <label>活动编号<input id="activityCode" readonly></label>
+    <label>状态<select id="status"><option>准备中</option><option>待发布</option><option>已发布</option><option>已完成</option><option>已归档</option></select></label>
+    <label class="wide">主办平台／分区／分会<input id="platform" placeholder="例如：102区域 M1 分区／新山五福讲演会"></label>
+    <label class="wide">活动主题 *<input id="topic" required placeholder="填写活动名称或宣传主题"></label>
+    <label>活动日期 *<input id="date" type="date" required></label>
+    <label>活动时间<input id="time" type="time"></label>
+    <label class="wide">地点<input id="location" placeholder="活动地点／线上平台"></label>
+    <label>负责人<input id="leader"></label>
+    <label>联络方式<input id="contact" placeholder="电话／WhatsApp／电邮"></label>
+    <label>活动价格<input id="price" placeholder="例如：免费／RM 30"></label>
+    <label>主要人物<input id="people" placeholder="讲师、嘉宾、主持人等"></label>
+    <label class="wide">活动简介／重点内容<textarea id="content" rows="4"></textarea></label>
+    <label class="wide">备注<textarea id="remarks" rows="3"></textarea></label>
+  </div>
+  <div class="dialog-actions"><button type="button" class="ghost" id="cancelDialog">取消</button><button type="submit" class="primary">保存活动</button></div>
+</form>
+</dialog>
+<div id="toast" role="status" aria-live="polite"></div>
+<footer>102 M区公关部管理系统 · 单机本地版 V1.5</footer>
+<script src="app.js"></script>
+</body>
+</html>
